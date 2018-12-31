@@ -43,6 +43,25 @@ double &vec3::operator[](int i) {
     return e[i];
 }
 
+vec3 vec3::operator+(const vec3 &other) const {
+    return vec3(e[0] + other.e[0], e[1] + other.e[1], e[2] + other.e[2]);
+}
+vec3 vec3::operator-(const vec3 &other) const {
+    return vec3(e[0] - other.e[0], e[1] - other.e[1], e[2] - other.e[2]);
+}
+vec3 vec3::operator*(const vec3 &other) const {
+    return vec3(e[0] * other.e[0], e[1] * other.e[1], e[2] * other.e[2]);
+}
+vec3 vec3::operator/(const vec3 &other) const {
+    return vec3(e[0] / other.e[0], e[1] / other.e[1], e[2] / other.e[2]);
+}
+vec3 vec3::operator*(double t) const {
+    return vec3(e[0] * t, e[1] * t, e[2] * t);
+}
+vec3 vec3::operator/(double t) const {
+    return vec3(e[0] / t, e[1] / t, e[2] / t);
+}
+
 vec3 &vec3::operator+=(const vec3 &other) {
     e[0] += other.e[0];
     e[1] += other.e[1];
@@ -90,9 +109,7 @@ void vec3::make_unit_vector() {
     *this /= length();
 }
 vec3 vec3::to_unit() const {
-    vec3 ret = *this;
-    ret /= length();
-    return ret;
+    return *this / length();
 }
 
 double vec3::dot(const vec3 &other) const {

@@ -25,6 +25,13 @@ public:
     double operator[](int i) const;
     double &operator[](int i);
 
+    vec3 operator+(const vec3 &other) const;
+    vec3 operator-(const vec3 &other) const;
+    vec3 operator*(const vec3 &other) const;
+    vec3 operator/(const vec3 &other) const;
+    vec3 operator*(double t) const;
+    vec3 operator/(double t) const;
+
     vec3 &operator+=(const vec3 &other);
     vec3 &operator-=(const vec3 &other);
     vec3 &operator*=(const vec3 &other);
