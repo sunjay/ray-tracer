@@ -46,12 +46,23 @@ vec3 background_color(const ray &r) {
     return (1.0 - t)*vec3(1.0, 1.0, 1.0) + t*vec3(0.5, 0.7, 1.0);
 }
 
+// Returns the color of the sphere at the given point based on the angle that
+// this point represents on the sphere. Mappings:
+// * red = x-value
+// * green = y-value
+// * blue = z-value
+vec3 sphere_normal_map_color(const vec3 &center, const vec3 &pt) {
+    return (pt - center).to_unit_range();
+}
+
 // Computes the color seen in the direction of the ray.
 // Computes what this ray intersects with and the color of that intersection point.
 vec3 color(const ray &r) {
-    double t = hit_sphere(vec3(0, 0, -1), 0.5, r);
+    vec3 sphere_center = vec3(0, 0, -1);
+    double t = hit_sphere(sphere_center, 0.5, r);
     if (t > 0.0) {
-        return vec3(0, 1, 1);
+        // Render a normal map of the sphere
+        return sphere_normal_map_color(sphere_center, r.at(t));
     }
 
     // If nothing else is hit, return the background

@@ -111,6 +111,12 @@ void vec3::make_unit_vector() {
 vec3 vec3::to_unit() const {
     return *this / length();
 }
+vec3 vec3::to_unit_range() const {
+    // Put all values into the range -1.0 to 1.0
+    vec3 unit = to_unit();
+    // Convert those values into the range 0.0 to 1.0
+    return 0.5*vec3(unit.x() + 1.0, unit.y() + 1.0, unit.z() + 1.0);
+}
 
 double vec3::dot(const vec3 &other) const {
     return e[0] * other.e[0] + e[1] * other.e[1] + e[2] * other.e[2];

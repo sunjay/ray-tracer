@@ -43,6 +43,8 @@ public:
     double square_length() const;
     void make_unit_vector();
     vec3 to_unit() const;
+    // Puts each element of this vector into the range 0.0 to 1.0
+    vec3 to_unit_range() const;
 
     double dot(const vec3 &other) const;
     vec3 cross(const vec3 &other) const;
