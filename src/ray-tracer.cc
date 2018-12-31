@@ -14,7 +14,7 @@ vec3 color(const ray &r) {
     // Make into unit vector so -1.0 < y < 1.0
     vec3 unit_direction = r.direction().to_unit();
     // Scales the y value so 0.0 < t < 1.0
-    float t = 0.5*(unit_direction.y() + 1.0);
+    double t = 0.5*(unit_direction.y() + 1.0);
     // This is a linear interpolation (lerp) which always has the form:
     // blended_value = (1 - t) * start_value + t*end_value with t = 0.0 to 1.0
     return (1.0 - t)*vec3(1.0, 1.0, 1.0) + t*vec3(0.5, 0.7, 1.0);
@@ -36,8 +36,8 @@ int main() {
 
     for (int j = ny-1; j >= 0; j--) {
         for (int i = 0; i < nx; i++) {
-            float u = float(i) / float(nx);
-            float v = float(j) / float(ny);
+            double u = double(i) / double(nx);
+            double v = double(j) / double(ny);
             // Cast a ray from the ray origin to wards the current position
             // being scanned
             ray r(origin, lower_left_corner + u*horizontal + v*vertical);
