@@ -1,3 +1,4 @@
 bin
 build
 ray-tracer
+*.ppm
