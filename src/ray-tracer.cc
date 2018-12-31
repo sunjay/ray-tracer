@@ -1,4 +1,4 @@
-#include <iostream>
+#include <cmath> // sqrt
 
 #include "vec3.hpp"
 #include "ppm.hpp"
@@ -6,7 +6,9 @@
 
 using namespace std;
 
-bool hit_sphere(const vec3 &center, double radius, const ray &r) {
+// Returns the smallest positive value of t for which the given ray intersects
+// with the sphere. Returns a negative value if there is no intersection.
+double hit_sphere(const vec3 &center, double radius, const ray &r) {
     // Equation for sphere: x*x + y*y + z*z = R*R
     // With arbitrary center: (x-cx)*(x-cx) + (y-cy)*(y-cy) + (z-cz)*(z-cz) = R*R
     // In vector form: (p - c).dot(p - c) = R*R where p = (x, y, z), c = (cx, cy, cz)
@@ -24,18 +26,17 @@ bool hit_sphere(const vec3 &center, double radius, const ray &r) {
     double b = 2.0 * oc.dot(r.direction());
     double c = oc.dot(oc) - radius * radius;
     double discriminant = b*b - 4*a*c;
-    return discriminant > 0;
+
+    if (discriminant < 0) {
+        return -1.0;
+    } else {
+        // Return smallest solution or negative if the sphere is behind the camera
+        return (-b - sqrt(discriminant)) / (2.0*a);
+    }
 }
 
-// Computes the color seen in the direction of the ray.
-// Computes what this ray intersects with and the color of that intersection point.
-vec3 color(const ray &r) {
-    if (hit_sphere(vec3(0, 0, -1), 0.5, r)) {
-        return vec3(0, 1, 1);
-    }
-
-    // If nothing else is hit, return the background
-
+// Returns the color of the background that the given ray intersects with
+vec3 background_color(const ray &r) {
     // Make into unit vector so -1.0 < y < 1.0
     vec3 unit_direction = r.direction().to_unit();
     // Scales the y value so 0.0 < t < 1.0
@@ -43,6 +44,18 @@ vec3 color(const ray &r) {
     // This is a linear interpolation (lerp) which always has the form:
     // blended_value = (1 - t) * start_value + t*end_value with t = 0.0 to 1.0
     return (1.0 - t)*vec3(1.0, 1.0, 1.0) + t*vec3(0.5, 0.7, 1.0);
+}
+
+// Computes the color seen in the direction of the ray.
+// Computes what this ray intersects with and the color of that intersection point.
+vec3 color(const ray &r) {
+    double t = hit_sphere(vec3(0, 0, -1), 0.5, r);
+    if (t > 0.0) {
+        return vec3(0, 1, 1);
+    }
+
+    // If nothing else is hit, return the background
+    return background_color(r);
 }
 
 int main() {
