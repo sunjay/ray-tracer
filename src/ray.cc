@@ -12,5 +12,5 @@ vec3 ray::direction() const {
 }
 
 vec3 ray::at(double t) const {
-    return a + b * t;
+    return a + t*b;
 }

@@ -132,3 +132,11 @@ std::ostream &operator<<(std::ostream &os, const vec3 &t) {
     os << t.e[0] << ' ' << t.e[1] << ' ' << t.e[2];
     return os;
 }
+
+vec3 operator*(double t, const vec3 &other) {
+    return other * t;
+}
+
+vec3 operator/(double t, const vec3 &other) {
+    return other / t;
+}

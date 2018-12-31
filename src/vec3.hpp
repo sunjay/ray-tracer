@@ -51,4 +51,7 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const vec3 &t);
 };
 
+vec3 operator*(double t, const vec3 &other);
+vec3 operator/(double t, const vec3 &other);
+
 #endif /* end of include guard: VEC3_HPP */
