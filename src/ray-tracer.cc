@@ -88,6 +88,9 @@ int main() {
             }
 
             col /= double(ns);
+            // Correcting for gamma correction in image viewers. Using gamma 2
+            // which means raising to the power of 1/gamma = 1/2
+            col = col.to_sqrt();
             img.add(col);
         }
     }

@@ -118,6 +118,10 @@ vec3 vec3::to_unit_range() const {
     return 0.5*vec3(unit.x() + 1.0, unit.y() + 1.0, unit.z() + 1.0);
 }
 
+vec3 vec3::to_sqrt() const {
+    return vec3(sqrt(e[0]), sqrt(e[1]), sqrt(e[2]));
+}
+
 double vec3::dot(const vec3 &other) const {
     return e[0] * other.e[0] + e[1] * other.e[1] + e[2] * other.e[2];
 }
