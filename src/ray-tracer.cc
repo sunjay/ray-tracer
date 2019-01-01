@@ -45,7 +45,7 @@ int main() {
 
     camera cam;
 
-    std::mt19937 rng;
+    std::default_random_engine rng;
     rng.seed(std::random_device()());
     uniform_real_distribution<double> dist; // uniform, 0.0 <= x < 1.0
     for (int j = ny-1; j >= 0; j--) {
