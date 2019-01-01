@@ -21,12 +21,36 @@ vec3 background_color(const ray &r) {
     return (1.0 - t)*vec3(1.0, 1.0, 1.0) + t*vec3(0.5, 0.7, 1.0);
 }
 
+// Returns a random coordinate on the surface of a unit-radius sphere
+vec3 random_in_unit_sphere() {
+    // Rejection method: try to generate a point within the volume of the unit
+    // cube and reject if not on sphere
+    std::default_random_engine rng;
+    uniform_real_distribution<double> dist; // uniform, 0.0 <= x < 1.0
+
+    vec3 p;
+    do {
+        p = 2.0*vec3(dist(rng), dist(rng), dist(rng)) - vec3(1, 1, 1);
+    } while (p.square_length() >= 1.0);
+    return p;
+}
+
 // Computes the color seen in the direction of the ray.
 // Computes what this ray intersects with and the color of that intersection point.
 vec3 color(const ray &r, const ray_target &world) {
     hit_record rec;
     if (world.hit(r, 0.0, numeric_limits<double>::max(), rec)) {
-        return rec.color;
+        // Diffuse material - absorbes the color of things around it and mixes
+        // in its own color.
+        // Pick a random point `target` from the unit radius sphere that is
+        // tangent to the hit point
+        vec3 target = rec.p + rec.normal + random_in_unit_sphere();
+        // Send a ray from p to the random point `target`. The sphere has center
+        // (p + N).
+        // Absorb the color of the target but blend it with the color of this
+        // sphere by multiplying it by 0.5. We absorb 50% of the energy on
+        // each bounce.
+        return 0.5 * color(ray(rec.p, target-rec.p), world);
     }
 
     // If nothing else is hit, return the background

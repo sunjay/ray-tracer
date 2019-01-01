@@ -7,15 +7,6 @@
 sphere::sphere() {}
 sphere::sphere(vec3 center, double radius): center{center}, radius{radius} {}
 
-// Returns the color of the sphere at the given point based on the angle that
-// this point represents on the sphere. Mappings:
-// * red = x-value
-// * green = y-value
-// * blue = z-value
-vec3 sphere_normal_map_color(const hit_record &rec) {
-    return rec.normal.to_unit_range();
-}
-
 bool sphere::hit(const ray &r, double t_min, double t_max, hit_record &rec) const {
     // Equation for sphere: x*x + y*y + z*z = R*R
     // With arbitrary center: (x-cx)*(x-cx) + (y-cy)*(y-cy) + (z-cz)*(z-cz) = R*R
@@ -45,7 +36,6 @@ bool sphere::hit(const ray &r, double t_min, double t_max, hit_record &rec) cons
         rec.t = t;
         rec.p = r.at(rec.t);
         rec.normal = (rec.p - center) / radius;
-        rec.color = sphere_normal_map_color(rec);
         return true;
     }
     // Try other solution
@@ -54,7 +44,6 @@ bool sphere::hit(const ray &r, double t_min, double t_max, hit_record &rec) cons
         rec.t = t;
         rec.p = r.at(rec.t);
         rec.normal = (rec.p - center) / radius;
-        rec.color = sphere_normal_map_color(rec);
         return true;
     }
 

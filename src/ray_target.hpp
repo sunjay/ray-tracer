@@ -9,9 +9,10 @@ struct hit_record {
     // The smallest positive value of t for which the given ray intersects the
     // target.
     double t;
+    // The point on the surface where the ray hit
     vec3 p;
+    // The normal of p
     vec3 normal;
-    vec3 color;
 };
 
 class ray_target {
