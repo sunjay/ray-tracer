@@ -1,11 +1,13 @@
 #include <cmath> // sqrt
 
 #include "ray.hpp"
+#include "material.hpp"
 
 #include "sphere.hpp"
 
-sphere::sphere() {}
-sphere::sphere(vec3 center, double radius): center{center}, radius{radius} {}
+sphere::sphere(material *mat): mat{mat} {}
+sphere::sphere(vec3 center, double radius, material *mat):
+    center{center}, radius{radius}, mat{mat} {}
 
 bool sphere::hit(const ray &r, double t_min, double t_max, hit_record &rec) const {
     // Equation for sphere: x*x + y*y + z*z = R*R
@@ -36,6 +38,7 @@ bool sphere::hit(const ray &r, double t_min, double t_max, hit_record &rec) cons
         rec.t = t;
         rec.p = r.at(rec.t);
         rec.normal = (rec.p - center) / radius;
+        rec.mat = mat.get();
         return true;
     }
     // Try other solution
@@ -44,6 +47,7 @@ bool sphere::hit(const ray &r, double t_min, double t_max, hit_record &rec) cons
         rec.t = t;
         rec.p = r.at(rec.t);
         rec.normal = (rec.p - center) / radius;
+        rec.mat = mat.get();
         return true;
     }
 

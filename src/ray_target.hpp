@@ -4,6 +4,7 @@
 #include "vec3.hpp"
 
 class ray;
+class material;
 
 struct hit_record {
     // The smallest positive value of t for which the given ray intersects the
@@ -13,6 +14,8 @@ struct hit_record {
     vec3 p;
     // The normal of p
     vec3 normal;
+    // The material that was hit
+    material *mat;
 };
 
 class ray_target {

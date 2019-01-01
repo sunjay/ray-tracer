@@ -7,6 +7,8 @@
 #include "camera.hpp"
 #include "ray_target_list.hpp"
 #include "sphere.hpp"
+#include "lambert.hpp"
+#include "metal.hpp"
 
 using namespace std;
 
@@ -21,38 +23,19 @@ vec3 background_color(const ray &r) {
     return (1.0 - t)*vec3(1.0, 1.0, 1.0) + t*vec3(0.5, 0.7, 1.0);
 }
 
-// Returns a random coordinate on the surface of a unit-radius sphere
-vec3 random_in_unit_sphere() {
-    // Rejection method: try to generate a point within the volume of the unit
-    // cube and reject if not on sphere
-    std::default_random_engine rng;
-    uniform_real_distribution<double> dist; // uniform, 0.0 <= x < 1.0
-
-    vec3 p;
-    do {
-        p = 2.0*vec3(dist(rng), dist(rng), dist(rng)) - vec3(1, 1, 1);
-    } while (p.square_length() >= 1.0);
-    return p;
-}
-
 // Computes the color seen in the direction of the ray.
 // Computes what this ray intersects with and the color of that intersection point.
-vec3 color(const ray &r, const ray_target &world) {
+vec3 color(const ray &r, const ray_target &world, int depth) {
     hit_record rec;
     // Some reflected rays hit the object they are reflecting off of, so we need
     // to ignore hits very near zero. Hence, 0.001
     if (world.hit(r, 0.001, numeric_limits<double>::max(), rec)) {
-        // Diffuse material - absorbes the color of things around it and mixes
-        // in its own color.
-        // Pick a random point `target` from the unit radius sphere that is
-        // tangent to the hit point
-        vec3 target = rec.p + rec.normal + random_in_unit_sphere();
-        // Send a ray from p to the random point `target`. The sphere has center
-        // (p + N).
-        // Absorb the color of the target but blend it with the color of this
-        // sphere by multiplying it by 0.5. We absorb 50% of the energy on
-        // each bounce.
-        return 0.5 * color(ray(rec.p, target-rec.p), world);
+        scatter_record srec;
+        if (depth < 50 && rec.mat->scatter(r, rec, srec)) {
+            return srec.attenuation * color(srec.scattered, world, depth+1);
+        }
+        // default if max-depth has been reached
+        return vec3(0, 0, 0);
     }
 
     // If nothing else is hit, return the background
@@ -66,8 +49,10 @@ int main() {
     ppm_image img(cout, nx, ny);
 
     ray_target_list world;
-    world.push_back(new sphere(vec3(0, 0, -1), 0.5));
-    world.push_back(new sphere(vec3(0, -100.5, -1), 100));
+    world.push_back(new sphere(vec3(0, 0, -1), 0.5, new lambert(vec3(0.8, 0.3, 0.3))));
+    world.push_back(new sphere(vec3(0, -100.5, -1), 100, new lambert(vec3(0.8, 0.8, 0.0))));
+    world.push_back(new sphere(vec3(1, 0, -1), 0.5, new metal(vec3(0.8, 0.6, 0.2))));
+    world.push_back(new sphere(vec3(-1, 0, -1), 0.5, new metal(vec3(0.8, 0.8, 0.8))));
 
     camera cam;
 
@@ -84,7 +69,7 @@ int main() {
                 // Cast a ray from the ray origin to wards the current position
                 // being scanned
                 ray r = cam.ray_for(u, v);
-                col += color(r, world);
+                col += color(r, world, 0);
             }
 
             col /= double(ns);
