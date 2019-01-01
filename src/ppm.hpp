@@ -1,5 +1,4 @@
-#ifndef PPM_HPP
-#define PPM_HPP
+#pragma once
 
 #include <iostream>
 #include <exception>
@@ -29,5 +28,3 @@ public:
     // Throws PPMIncomplete if not enough colors were provided
     void finish();
 };
-
-#endif /* end of include guard: PPM_HPP */

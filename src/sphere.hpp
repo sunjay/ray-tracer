@@ -1,5 +1,4 @@
-#ifndef SPHERE_HPP
-#define SPHERE_HPP
+#pragma once
 
 #include <memory>
 
@@ -19,5 +18,3 @@ public:
 
     virtual bool hit(const ray &r, double t_min, double t_max, hit_record &rec) const override;
 };
-
-#endif /* end of include guard: SPHERE_HPP */

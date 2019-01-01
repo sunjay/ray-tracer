@@ -1,5 +1,4 @@
-#ifndef CAMERA_HPP
-#define CAMERA_HPP
+#pragma once
 
 #include "vec3.hpp"
 #include "ray.hpp"
@@ -18,5 +17,3 @@ public:
 
     ray ray_for(double u, double v) const;
 };
-
-#endif /* end of include guard: CAMERA_HPP */

@@ -1,5 +1,4 @@
-#ifndef RAY_HPP
-#define RAY_HPP
+#pragma once
 
 #include "vec3.hpp"
 
@@ -15,5 +14,3 @@ public:
 
     vec3 at(double t) const;
 };
-
-#endif /* end of include guard: RAY_HPP */

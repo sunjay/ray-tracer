@@ -1,5 +1,4 @@
-#ifndef RAY_TARGET_LIST_HPP
-#define RAY_TARGET_LIST_HPP
+#pragma once
 
 #include <vector>
 #include <memory>
@@ -19,5 +18,3 @@ public:
 
     virtual bool hit(const ray &r, double t_min, double t_max, hit_record &rec) const override;
 };
-
-#endif /* end of include guard: RAY_TARGET_LIST_HPP */

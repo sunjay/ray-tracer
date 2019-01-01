@@ -1,5 +1,4 @@
-#ifndef RAY_TARGET_HPP
-#define RAY_TARGET_HPP
+#pragma once
 
 #include "vec3.hpp"
 
@@ -24,5 +23,3 @@ public:
     // within the given range.
     virtual bool hit(const ray &r, double t_min, double t_max, hit_record &rec) const = 0;
 };
-
-#endif /* end of include guard: RAY_TARGET_HPP */

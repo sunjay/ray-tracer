@@ -1,5 +1,4 @@
-#ifndef VEC3_HPP
-#define VEC3_HPP
+#pragma once
 
 #include <iostream>
 
@@ -57,5 +56,3 @@ public:
 
 vec3 operator*(double t, const vec3 &other);
 vec3 operator/(double t, const vec3 &other);
-
-#endif /* end of include guard: VEC3_HPP */
