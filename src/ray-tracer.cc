@@ -1,39 +1,12 @@
-#include <cmath> // sqrt
+#include <limits> // std::numeric_limits
 
 #include "vec3.hpp"
 #include "ppm.hpp"
 #include "ray.hpp"
+#include "ray_target_list.hpp"
+#include "sphere.hpp"
 
 using namespace std;
-
-// Returns the smallest positive value of t for which the given ray intersects
-// with the sphere. Returns a negative value if there is no intersection.
-double hit_sphere(const vec3 &center, double radius, const ray &r) {
-    // Equation for sphere: x*x + y*y + z*z = R*R
-    // With arbitrary center: (x-cx)*(x-cx) + (y-cy)*(y-cy) + (z-cz)*(z-cz) = R*R
-    // In vector form: (p - c).dot(p - c) = R*R where p = (x, y, z), c = (cx, cy, cz)
-    // To check if ray intersects sphere, let p = r where r = a + t*b
-    // This gives us: (r - c).dot(r - c) = R*R
-    // Substituting: (a + t*b - c).dot(a + t*b - c) = R*R
-    // Expanding: t*t*b.dot(b) + 2*t*b.dot(a-c) + (a-c).dot(a-c) - R*R = 0
-    // From the quadratic formula, we get the discriminant b*b - 4*a*c
-    // This tells us the number of solutions and we can interpret it as the
-    // number of intersections. As long as the discriminant tells us there are
-    // at least two intersections, the ray passes through the sphere. One
-    // intersection means that the ray just hits on the edge.
-    vec3 oc = r.origin() - center;
-    double a = r.direction().dot(r.direction());
-    double b = 2.0 * oc.dot(r.direction());
-    double c = oc.dot(oc) - radius * radius;
-    double discriminant = b*b - 4*a*c;
-
-    if (discriminant < 0) {
-        return -1.0;
-    } else {
-        // Return smallest solution or negative if the sphere is behind the camera
-        return (-b - sqrt(discriminant)) / (2.0*a);
-    }
-}
 
 // Returns the color of the background that the given ray intersects with
 vec3 background_color(const ray &r) {
@@ -46,23 +19,12 @@ vec3 background_color(const ray &r) {
     return (1.0 - t)*vec3(1.0, 1.0, 1.0) + t*vec3(0.5, 0.7, 1.0);
 }
 
-// Returns the color of the sphere at the given point based on the angle that
-// this point represents on the sphere. Mappings:
-// * red = x-value
-// * green = y-value
-// * blue = z-value
-vec3 sphere_normal_map_color(const vec3 &center, const vec3 &pt) {
-    return (pt - center).to_unit_range();
-}
-
 // Computes the color seen in the direction of the ray.
 // Computes what this ray intersects with and the color of that intersection point.
-vec3 color(const ray &r) {
-    vec3 sphere_center = vec3(0, 0, -1);
-    double t = hit_sphere(sphere_center, 0.5, r);
-    if (t > 0.0) {
-        // Render a normal map of the sphere
-        return sphere_normal_map_color(sphere_center, r.at(t));
+vec3 color(const ray &r, const ray_target &world) {
+    hit_record rec;
+    if (world.hit(r, 0.0, numeric_limits<double>::max(), rec)) {
+        return rec.color;
     }
 
     // If nothing else is hit, return the background
@@ -73,6 +35,10 @@ int main() {
     int nx = 200;
     int ny = 100;
     ppm_image img(cout, nx, ny);
+
+    ray_target_list world;
+    world.push_back(new sphere(vec3(0, 0, -1), 0.5));
+    world.push_back(new sphere(vec3(0, -100.5, -1), 100));
 
     // Start position where scanning begins
     vec3 lower_left_corner(-2.0, -1.0, -1.0);
@@ -90,7 +56,7 @@ int main() {
             // Cast a ray from the ray origin to wards the current position
             // being scanned
             ray r(origin, lower_left_corner + u*horizontal + v*vertical);
-            vec3 col = color(r);
+            vec3 col = color(r, world);
 
             img.add(col);
         }
