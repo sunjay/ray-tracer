@@ -1,8 +1,10 @@
+#include <random> // std::uniform_real_distribution
 #include <limits> // std::numeric_limits
 
 #include "vec3.hpp"
 #include "ppm.hpp"
 #include "ray.hpp"
+#include "camera.hpp"
 #include "ray_target_list.hpp"
 #include "sphere.hpp"
 
@@ -34,30 +36,33 @@ vec3 color(const ray &r, const ray_target &world) {
 int main() {
     int nx = 200;
     int ny = 100;
+    int ns = 100; // number of samples for antialiasing
     ppm_image img(cout, nx, ny);
 
     ray_target_list world;
     world.push_back(new sphere(vec3(0, 0, -1), 0.5));
     world.push_back(new sphere(vec3(0, -100.5, -1), 100));
 
-    // Start position where scanning begins
-    vec3 lower_left_corner(-2.0, -1.0, -1.0);
-    // Width of the rectangle to scan
-    vec3 horizontal(4.0, 0.0, 0.0);
-    // Height of the rectangle to scan
-    vec3 vertical(0.0, 2.0, 0.0);
-    // Origin of the ray that is used for scanning
-    vec3 origin(0.0, 0.0, 0.0);
+    camera cam;
 
+    std::mt19937 rng;
+    rng.seed(std::random_device()());
+    uniform_real_distribution<double> dist; // uniform, 0.0 <= x < 1.0
     for (int j = ny-1; j >= 0; j--) {
         for (int i = 0; i < nx; i++) {
-            double u = double(i) / double(nx);
-            double v = double(j) / double(ny);
-            // Cast a ray from the ray origin to wards the current position
-            // being scanned
-            ray r(origin, lower_left_corner + u*horizontal + v*vertical);
-            vec3 col = color(r, world);
+            vec3 col;
+            // perform antialiasing: average many samples of rays randomly
+            // around the actual pixel we are focusing on
+            for (int s = 0; s < ns; s++) {
+                double u = (double(i) + dist(rng)) / double(nx);
+                double v = (double(j) + dist(rng)) / double(ny);
+                // Cast a ray from the ray origin to wards the current position
+                // being scanned
+                ray r = cam.ray_for(u, v);
+                col += color(r, world);
+            }
 
+            col /= double(ns);
             img.add(col);
         }
     }
