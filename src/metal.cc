@@ -1,8 +1,10 @@
+#include <algorithm> // std::min
+
 #include "ray_target.hpp"
 
 #include "metal.hpp"
 
-metal::metal(const vec3 &albedo): albedo{albedo} {}
+metal::metal(const vec3 &albedo, double fuzz): albedo{albedo}, fuzz{std::min(fuzz, 1.0)} {}
 
 // Returns the reflection of v off a surface with normal n.
 static vec3 reflect(const vec3 &v, const vec3 &n) {
@@ -13,7 +15,7 @@ static vec3 reflect(const vec3 &v, const vec3 &n) {
 
 bool metal::scatter(const ray &r_in, const hit_record &rec, scatter_record &srec) const {
     vec3 reflected = reflect(r_in.direction().to_unit(), rec.normal);
-    srec.scattered = ray(rec.p, reflected);
+    srec.scattered = ray(rec.p, reflected + fuzz * random_in_unit_sphere());
     srec.attenuation = albedo;
     // dot product is < 0 when angle > 90 degrees and > 0 otherwise
     return srec.scattered.direction().dot(rec.normal) > 0;

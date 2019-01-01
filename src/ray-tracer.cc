@@ -51,8 +51,8 @@ int main() {
     ray_target_list world;
     world.push_back(new sphere(vec3(0, 0, -1), 0.5, new lambert(vec3(0.8, 0.3, 0.3))));
     world.push_back(new sphere(vec3(0, -100.5, -1), 100, new lambert(vec3(0.8, 0.8, 0.0))));
-    world.push_back(new sphere(vec3(1, 0, -1), 0.5, new metal(vec3(0.8, 0.6, 0.2))));
-    world.push_back(new sphere(vec3(-1, 0, -1), 0.5, new metal(vec3(0.8, 0.8, 0.8))));
+    world.push_back(new sphere(vec3(1, 0, -1), 0.5, new metal(vec3(0.8, 0.6, 0.2), 0.3)));
+    world.push_back(new sphere(vec3(-1, 0, -1), 0.5, new metal(vec3(0.8, 0.8, 0.8), 1.0)));
 
     camera cam;
 

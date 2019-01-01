@@ -18,3 +18,6 @@ public:
     // about the scattering that should occur.
     virtual bool scatter(const ray &r_in, const hit_record &rec, scatter_record &srec) const = 0;
 };
+
+// Utility methods shared by materials
+extern vec3 random_in_unit_sphere();
