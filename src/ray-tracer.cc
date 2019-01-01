@@ -39,7 +39,9 @@ vec3 random_in_unit_sphere() {
 // Computes what this ray intersects with and the color of that intersection point.
 vec3 color(const ray &r, const ray_target &world) {
     hit_record rec;
-    if (world.hit(r, 0.0, numeric_limits<double>::max(), rec)) {
+    // Some reflected rays hit the object they are reflecting off of, so we need
+    // to ignore hits very near zero. Hence, 0.001
+    if (world.hit(r, 0.001, numeric_limits<double>::max(), rec)) {
         // Diffuse material - absorbes the color of things around it and mixes
         // in its own color.
         // Pick a random point `target` from the unit radius sphere that is
