@@ -22,4 +22,5 @@ public:
     // Returns true if this target is hit by the given ray and the t value is
     // within the given range.
     virtual bool hit(const ray &r, double t_min, double t_max, hit_record &rec) const = 0;
+    virtual ~ray_target() {}
 };
