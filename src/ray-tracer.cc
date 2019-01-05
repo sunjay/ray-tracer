@@ -1,6 +1,6 @@
-#include <cstdlib> // drand48
 #include <limits> // std::numeric_limits
 
+#include "random.hpp"
 #include "vec3.hpp"
 #include "ppm.hpp"
 #include "ray.hpp"
@@ -63,8 +63,8 @@ int main() {
             // perform antialiasing: average many samples of rays randomly
             // around the actual pixel we are focusing on
             for (int s = 0; s < ns; s++) {
-                double u = double(i + drand48()) / double(nx);
-                double v = double(j + drand48()) / double(ny);
+                double u = double(i + rand_double()) / double(nx);
+                double v = double(j + rand_double()) / double(ny);
                 // Cast a ray from the ray origin to wards the current position
                 // being scanned
                 ray r = cam.ray_for(u, v);

@@ -1,4 +1,4 @@
-#include <cstdlib> // drand48
+#include "random.hpp"
 
 #include "material.hpp"
 
@@ -8,7 +8,7 @@ vec3 random_in_unit_sphere() {
     // cube and reject if not on sphere
     vec3 p;
     do {
-        p = 2.0*vec3(drand48(), drand48(), drand48()) - vec3(1, 1, 1);
+        p = 2.0*vec3(rand_double(), rand_double(), rand_double()) - vec3(1, 1, 1);
     } while (p.square_length() >= 1.0);
     return p;
 }
