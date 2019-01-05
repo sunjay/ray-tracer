@@ -12,7 +12,7 @@ ppm_image::ppm_image(std::ostream &out, int nx, int ny): out{out}, remaining{nx 
     out << MAX_COLOR << endl;
 }
 
-void ppm_image::add(vec3 &rgb) {
+void ppm_image::add(const vec3 &rgb) {
     // Need the + 0.99 so we get the right rounding behaviour (int truncates)
     double max = ((double)MAX_COLOR) + 0.99;
     int ir = int(max * rgb.r());
