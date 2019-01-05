@@ -1,4 +1,4 @@
-#include <random> // std::uniform_real_distribution
+#include <cstdlib> // drand48
 #include <limits> // std::numeric_limits
 
 #include "vec3.hpp"
@@ -56,16 +56,14 @@ int main() {
 
     camera cam;
 
-    std::default_random_engine rng;
-    uniform_real_distribution<double> dist; // uniform, 0.0 <= x < 1.0
     for (int j = ny-1; j >= 0; j--) {
         for (int i = 0; i < nx; i++) {
             vec3 col;
             // perform antialiasing: average many samples of rays randomly
             // around the actual pixel we are focusing on
             for (int s = 0; s < ns; s++) {
-                double u = (double(i) + dist(rng)) / double(nx);
-                double v = (double(j) + dist(rng)) / double(ny);
+                double u = double(i + drand48()) / double(nx);
+                double v = double(j + drand48()) / double(ny);
                 // Cast a ray from the ray origin to wards the current position
                 // being scanned
                 ray r = cam.ray_for(u, v);
